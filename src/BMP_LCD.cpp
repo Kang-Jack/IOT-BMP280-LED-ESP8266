@@ -151,6 +151,7 @@ void loop(void){
   readInput();
   if(reading==HIGH)
   {
+    reading=LOW;
     set_m_text();
     new_screen_oled(0,0,"Data is coming...");
     
