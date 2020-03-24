@@ -18,9 +18,15 @@ SSD1306Wire  display(0x3c, pinSDA, pinSCL);
 
 const int buttonPin = 14;//14;    // the number of the pushbutton pin
 
-const int delayTime = 4000; 
+const int delayTime = 5000; 
 const int waittingSec = 15;
 int reading =LOW;
+
+float temp;
+float hum;
+float pres;
+float alti;
+
 void readInput(){
   if(reading==LOW){
       reading = digitalRead(buttonPin);
@@ -61,7 +67,8 @@ void display_bme_temp() {
     set_m_text();
     display.drawString(0,0,"Temperature (*C)");
     set_b_text();
-    display.drawString(0,22, String(bme.readTemperature()));
+    temp=bme.readTemperature();
+    display.drawString(0,22, String(temp));
     display.display();
     delay(delayTime);
 }
@@ -72,9 +79,9 @@ void display_bme_last_Pressure() {
     set_m_text();
     display.drawString(0,0,"Last Pres & Alti");
     set_m_text();
-    display.drawString(0,22,String(String(bme.readPressure() / 100.0F)));
+    display.drawString(0,22,String(String(pres)));
     display.drawString(60,22, "hPa");
-    display.drawString(0,44, String(bme.readAltitude(SEALEVELPRESSURE_HPA)));
+    display.drawString(0,44, String(alti));
     display.drawString(60,44, "M");
     display.display();
     delay(delayTime);
@@ -85,9 +92,9 @@ void display_bme_last_temp() {
     set_m_text();
     display.drawString(0,0,"Last Temp & Humi");
     set_m_text();
-    display.drawString(0,22,String(bme.readTemperature()));
+    display.drawString(0,22,String(temp));
     display.drawString(60,22, "*C");
-    display.drawString(0,44, String(bme.readHumidity()));
+    display.drawString(0,44, String(hum));
     display.drawString(60,44, "%");
     display.display();
     delay(delayTime);
@@ -98,7 +105,8 @@ void display_bme_Pressure() {
     set_m_text();
     display.drawString(0,0,"Pressure (hPa)");
     set_b_text();
-    display.drawString(0,22, String(bme.readPressure() / 100.0F));
+    pres=bme.readPressure() / 100.0F;
+    display.drawString(0,22, String(pres));
     display.display();
     delay(2000);
 }
@@ -108,7 +116,8 @@ void display_bme_Altitude() {
     set_m_text();
     display.drawString(0,0,"Altitude (M)");
     set_b_text();
-    display.drawString(0,22, String(bme.readAltitude(SEALEVELPRESSURE_HPA)));
+    alti=bme.readAltitude(SEALEVELPRESSURE_HPA);
+    display.drawString(0,22, String(alti));
     display.display();
     delay(2000);
 }
@@ -118,7 +127,8 @@ void display_bme_Humidity() {
     set_m_text();
     display.drawString(0,0,"Humidity (%)");
     set_b_text();
-    display.drawString(0,22, String(bme.readHumidity()));
+    hum=bme.readHumidity();
+    display.drawString(0,22, String(hum));
     display.display();
     delay(2000);
 }
@@ -161,11 +171,12 @@ void loop(void){
         display_bme_Humidity();
         display_bme_Pressure();
         display_bme_Altitude();
-        display_bme_last_temp();
-        display_bme_last_Pressure();
         delay(500);    
     } 
-
+  }
+  else{
+        display_bme_last_temp();
+        display_bme_last_Pressure();
   }
   delay(500);
 }
